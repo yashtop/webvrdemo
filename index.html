@@ -1,0 +1,103 @@
+<html>
+  <head>
+    <title>Multiple Markers - A-Frame School</title>
+    <meta name="description" content="Multiple Markers - A-Frame School">
+    <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+    <script>
+    var visibleObj = 1;
+    AFRAME.registerComponent('set-menu', {
+        schema: {default:''},
+        init() {
+    	  this.el.addEventListener('click', () => {
+        if(visibleObj==1){
+          document.getElementById(this.el.id+'obj').setAttribute("visible",true);
+
+        }else{
+          document.getElementById(visibleObj+'obj').setAttribute("visible",false);
+          document.getElementById(this.el.id+'obj').setAttribute("visible",true);
+        }
+    		visibleObj = this.el.id;
+
+
+    	})
+        }
+      });
+      AFRAME.registerComponent('set-sky', {
+        schema: {default:''},
+        init() {
+
+        this.el.addEventListener('click', () => {
+    		const sky = document.getElementById(this.el.id);
+        const skySrc = sky.id.replace('_thumb','');
+        switch(skySrc){
+          case 'sky1':
+          document.getElementById("sky2_video").setAttribute('visible',false );
+          document.getElementById("sky3_video1").setAttribute('visible',false );
+          document.getElementById("titleText").setAttribute('value','Entrance Area');
+          break;
+          case 'sky2':
+          document.getElementById("sky2_video").setAttribute('visible',true );
+          document.getElementById("sky3_video1").setAttribute('visible',false );
+          document.getElementById("titleText").setAttribute('value','Advertisement Area');
+          break;
+          case 'sky3':
+          document.getElementById("sky2_video").setAttribute('visible',false );
+          document.getElementById("sky3_video1").setAttribute('visible',true );
+          document.getElementById("titleText").setAttribute('value','Monitoring Area');
+          break;
+          case 'sky4':
+          document.getElementById("sky2_video").setAttribute('visible',false );
+          document.getElementById("sky3_video1").setAttribute('visible',false );
+          document.getElementById("titleText").setAttribute('value','Access Station');
+          break;
+
+        }
+    		document.getElementById("skymain").setAttribute('src','#'+skySrc );
+
+          });
+        }
+      });
+      </script>
+
+  </head>
+  <body>
+      <a-scene>
+        <a-assets>
+          <img id="thumb1" src="data/thumb_1.png" crossorigin="anonymous" />
+          <img id="thumb2" src="data/thumb_2.png" crossorigin="anonymous" />
+          <img id="thumb3" src="data/thumb_3.png" crossorigin="anonymous" />
+          <img id="thumb4" src="data/thumb_4.png" crossorigin="anonymous" />
+          <img id="sky1" src="data/sky_1.jpg" crossorigin="anonymous" />
+          <img id="sky2" src="data/sky_2.jpg" crossorigin="anonymous" />
+          <img id="sky3" src="data/sky_3.jpg" crossorigin="anonymous" />
+          <img id="sky4" src="data/sky_4.jpg" crossorigin="anonymous" />
+
+        </a-assets>
+        <a-sky src="#sky1" rotation="0 -100 0" id="skymain"></a-sky>
+        <a-video src="data/sky2_video.mp4" width="2.5" height="1.7" position="2.7 0.3 -4" visible="false" id="sky2_video"></a-video>
+        <a-video src="data/sky3_video1.mp4" width="3" height="2" position="0.5 0.5 -4" visible="false" id="sky3_video1"></a-video>
+
+       <!-- <a-video src="video.mp4" width="2.5" height="3.5" position="1.7 3.4 -4" visible="false" id="vidiconobj"></a-video>
+        <a-image id="imageiconobj" src="imageiconobj.jpg" width="2.5" height="3.5" id="vidicon" position="1.7 3.4 -4" visible="false"></a-image>
+         <a-image id="anaiconobj" src="imageicon1.jpg" width="2.5" height="3.5" id="vidicon" position="1.7 3.4 -4" visible="false"></a-image>
+        <a-collada-model src="#tree" rotation="0 45 0" position="1.7 2.5 -4" scale="0.5 0.5 0.5"  collada-model="" id="3diconobj" visible="false">
+
+        </a-collada-model>
+        <a-animation attribute="position" from="0 0 0" to="2 4 -8"><a-text font="kelsonsans" value="Welcome" width="6" position="-2.5 0.25 -1.5" rotation="0 15 0"></a-text></a-animation>
+-->
+        <a-text font="kelsonsans" value="Entrance Area" width="6" position="0 2 -4" rotation="0 0 0" id="titleText"></a-text>
+        <a-image src="#thumb1" width="1" height="0.5" id="sky1_thumb" position="-2 2 -4" set-sky></a-image>
+        <a-image src="#thumb2" width="1" height="0.5" id="sky2_thumb" position="-2 1.4 -4" set-sky></a-image>
+        <a-image src="#thumb3" width="1" height="0.5" id="sky3_thumb" position="-2 0.8 -4" set-sky></a-image>
+        <a-image src="#thumb4" width="1" height="0.5" id="sky4_thumb" position="-2 0.2 -4" set-sky></a-image>
+          <a-entity position="0.1 0.1 0.5">
+           <a-entity camera look-controls wasd-controls>
+               <a-entity position="0 0 -3" scale="0.2 0.2 0.2"  geometry="primitive: ring; radiusOuter: 0.20;radiusInner: 0.10;" material="color: #990000; shader: flat" cursor="maxDistance: 30; fuse: true">
+                   <a-animation begin="click" easing="ease-in" attribute="scale" fill="backwards" from="0.1 0.1 0.1" to="1 1 1" dur="150"></a-animation>
+                   <a-animation begin="fusing" easing="ease-in" attribute="scale" fill="forwards" from="1 1 1" to="0.2 0.2 0.2" dur="1500"></a-animation>
+               </a-entity>
+           </a-entity>
+       </a-entity>
+      </a-scene>
+    </body>
+</html>
