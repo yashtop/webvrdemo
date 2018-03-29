@@ -24,24 +24,34 @@
     </style>
 
     <script>
-    var visibleObj = 1;
-    AFRAME.registerComponent('set-menu', {
-        schema: {default:''},
-        init() {
-    	  this.el.addEventListener('click', () => {
-        if(visibleObj==1){
-          document.getElementById(this.el.id+'obj').setAttribute("visible",true);
+      var AVideoPlayer = function() {
+      /**
+      * MOBILE PATCH TO PLAY VIDEO
+      */
+      this._mobileFriendly = function() {
+        if (AFRAME.utils.device.isMobile()) {
+          var that = this;
+          let video_permission        = document.getElementById('video-permission');
+          let video_permission_button = document.getElementById('video-permission-button');
 
-        }else{
-          document.getElementById(visibleObj+'obj').setAttribute("visible",false);
-          document.getElementById(this.el.id+'obj').setAttribute("visible",true);
+          video_permission.style.display = 'block';
+          video_permission_button.addEventListener("click", function() {
+            video_permission.style.display = 'none';
+            var vid1Src = document.getElementById("sky2_video_src");
+            var vid2Src = document.getElementById("sky3_video1_src");
+            vid1Src.elVideo.play();
+            vid1Src.elVideo.pause();
+            vid2Src.elVideo.play();
+            vid2Src.elVideo.pause();
+          }, false);
         }
-    		visibleObj = this.el.id;
-
-
-    	})
-        }
-      });
+      }
+      this.init = function() {
+        this._mobileFriendly();
+      }
+      this.init();
+     }
+     var videoPlayer = new AVideoPlayer();
       AFRAME.registerComponent('set-sky', {
         schema: {default:''},
         init() {
