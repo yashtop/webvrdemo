@@ -39,10 +39,10 @@
             video_permission.style.display = 'none';
             var vid1Src = document.getElementById("sky2_video_src");
             var vid2Src = document.getElementById("sky3_video1_src");
-            vid1Src.elVideo.play();
-            vid1Src.elVideo.pause();
-            vid2Src.elVideo.play();
-            vid2Src.elVideo.pause();
+            vid1Src.play();
+            vid1Src.pause();
+            vid2Src.play();
+            vid2Src.pause();
           }, false);
         }
       }
@@ -51,7 +51,6 @@
       }
       this.init();
      }
-     var videoPlayer = new AVideoPlayer();
       AFRAME.registerComponent('set-sky', {
         schema: {default:''},
         init() {
@@ -176,4 +175,7 @@
        </a-entity>
       </a-scene>
     </body>
+    <script>
+    var videoPlayer = new AVideoPlayer();
+    </script>
 </html>
