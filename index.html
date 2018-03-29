@@ -3,6 +3,26 @@
     <title>Multiple Markers - A-Frame School</title>
     <meta name="description" content="Multiple Markers - A-Frame School">
     <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+    <style type="text/css">
+      #video-permission {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: white;
+          z-index: 10000;
+          display: none;
+      }
+      #video-permission-button {
+        position: fixed;
+        top: calc(50% - 1em);
+        left: calc(50% - 60px);
+        width: 120px;
+        height: 2em;
+      }
+    </style>
+
     <script>
     var visibleObj = 1;
     AFRAME.registerComponent('set-menu', {
@@ -25,7 +45,6 @@
       AFRAME.registerComponent('set-sky', {
         schema: {default:''},
         init() {
-
         this.el.addEventListener('click', () => {
     		var sky = document.getElementById(this.el.id);
         var skySrc = sky.id.replace('_thumb','');
@@ -33,15 +52,35 @@
         var vid2 = document.getElementById("sky3_video1");
         var vid1Src = document.getElementById("sky2_video_src");
         var vid2Src = document.getElementById("sky3_video1_src");
+        var thumb1 = document.getElementById("sky1_thumb");
+        var thumb2 = document.getElementById("sky2_thumb");
+        var thumb3 = document.getElementById("sky3_thumb");
+        var thumb4 = document.getElementById("sky4_thumb");
         switch(skySrc){
           case 'sky1':
           vid1.setAttribute('visible',false );
           vid2.setAttribute('visible',false );
+          thumb1.setAttribute('rotation',{'x':0,'y':0,'z':0});
+          thumb2.setAttribute('rotation',{'x':0,'y':0,'z':0});
+          thumb3.setAttribute('rotation',{'x':0,'y':0,'z':0});
+          thumb4.setAttribute('rotation',{'x':0,'y':0,'z':0});
+          thumb1.setAttribute('position',{'x':-2,'y':2,'z':-4});
+          thumb2.setAttribute('position',{'x':-2,'y':1.4,'z':-4});
+          thumb3.setAttribute('position',{'x':-2,'y':0.8,'z':-4});
+          thumb4.setAttribute('position',{'x':-2,'y':0.2,'z':-4});
           vid1Src.pause();
           vid2Src.pause();
           break;
           case 'sky2':
           vid1.setAttribute('visible',true );
+          thumb1.setAttribute('rotation',{'x':0,'y':-45,'z':0});
+          thumb2.setAttribute('rotation',{'x':0,'y':-45,'z':0});
+          thumb3.setAttribute('rotation',{'x':0,'y':-45,'z':0});
+          thumb4.setAttribute('rotation',{'x':0,'y':-45,'z':0});
+          thumb1.setAttribute('position',{'x':5,'y':1.5,'z':-4});
+          thumb2.setAttribute('position',{'x':5,'y':0.9,'z':-4});
+          thumb3.setAttribute('position',{'x':5,'y':0.3,'z':-4});
+          thumb4.setAttribute('position',{'x':5,'y':-0.3,'z':-4});
           vid1Src.play();
           vid2.setAttribute('visible',false );
           vid2Src.pause();
@@ -49,12 +88,28 @@
           case 'sky3':
           vid1.setAttribute('visible',false );
           vid2.setAttribute('visible',true );
+          thumb1.setAttribute('rotation',{'x':0,'y':0,'z':0});
+          thumb2.setAttribute('rotation',{'x':0,'y':0,'z':0});
+          thumb3.setAttribute('rotation',{'x':0,'y':0,'z':0});
+          thumb4.setAttribute('rotation',{'x':0,'y':0,'z':0});
+          thumb1.setAttribute('position',{'x':-2,'y':2,'z':-4});
+          thumb2.setAttribute('position',{'x':-2,'y':1.4,'z':-4});
+          thumb3.setAttribute('position',{'x':-2,'y':0.8,'z':-4});
+          thumb4.setAttribute('position',{'x':-2,'y':0.2,'z':-4});
           vid1Src.pause();
           vid2Src.play();
           break;
           case 'sky4':
           vid1.setAttribute('visible',false );
           vid2.setAttribute('visible',false );
+          thumb1.setAttribute('rotation',{'x':0,'y':-45,'z':0});
+          thumb2.setAttribute('rotation',{'x':0,'y':-45,'z':0});
+          thumb3.setAttribute('rotation',{'x':0,'y':-45,'z':0});
+          thumb4.setAttribute('rotation',{'x':0,'y':-45,'z':0});
+          thumb1.setAttribute('position',{'x':3.5,'y':1,'z':-4});
+          thumb2.setAttribute('position',{'x':3.5,'y':0.4,'z':-4});
+          thumb3.setAttribute('position',{'x':3.5,'y':-0.2,'z':-4});
+          thumb4.setAttribute('position',{'x':3.5,'y':-0.8,'z':-4});
           vid1Src.pause();
           vid2Src.pause();
           break;
@@ -69,6 +124,9 @@
 
   </head>
   <body>
+    <div id="video-permission">
+     <button id="video-permission-button">Allow VR video</button>
+   </div>
       <a-scene>
         <a-assets>
           <img id="thumb1" src="data/thumb_1.png" crossorigin="anonymous" />
@@ -94,7 +152,7 @@
         </a-collada-model>
         <a-animation attribute="position" from="0 0 0" to="2 4 -8"><a-text font="kelsonsans" value="Welcome" width="6" position="-2.5 0.25 -1.5" rotation="0 15 0"></a-text></a-animation>
 -->
-        <a-image src="#thumb1" width="1" height="0.5" id="sky1_thumb" position="-2 2 -4" set-sky></a-image>
+        <a-image src="#thumb1" width="1" height="0.5" id="sky1_thumb" position="-2 2 -4"  set-sky></a-image>
         <a-image src="#thumb2" width="1" height="0.5" id="sky2_thumb" position="-2 1.4 -4" set-sky></a-image>
         <a-image src="#thumb3" width="1" height="0.5" id="sky3_thumb" position="-2 0.8 -4" set-sky></a-image>
         <a-image src="#thumb4" width="1" height="0.5" id="sky4_thumb" position="-2 0.2 -4" set-sky></a-image>
