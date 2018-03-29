@@ -27,28 +27,36 @@
         init() {
 
         this.el.addEventListener('click', () => {
-    		const sky = document.getElementById(this.el.id);
-        const skySrc = sky.id.replace('_thumb','');
+    		var sky = document.getElementById(this.el.id);
+        var skySrc = sky.id.replace('_thumb','');
+        var vid1 = document.getElementById("sky2_video");
+        var vid2 = document.getElementById("sky3_video1");
+        var vid1Src = document.getElementById("sky2_video_src");
+        var vid2Src = document.getElementById("sky3_video1_src");
         switch(skySrc){
           case 'sky1':
-          document.getElementById("sky2_video").setAttribute('visible',false );
-          document.getElementById("sky3_video1").setAttribute('visible',false );
-          document.getElementById("titleText").setAttribute('value','Entrance Area');
+          vid1.setAttribute('visible',false );
+          vid2.setAttribute('visible',false );
+          vid1Src.pause();
+          vid2Src.pause();
           break;
           case 'sky2':
-          document.getElementById("sky2_video").setAttribute('visible',true );
-          document.getElementById("sky3_video1").setAttribute('visible',false );
-          document.getElementById("titleText").setAttribute('value','Advertisement Area');
+          vid1.setAttribute('visible',true );
+          vid1Src.play();
+          vid2.setAttribute('visible',false );
+          vid2Src.pause();
           break;
           case 'sky3':
-          document.getElementById("sky2_video").setAttribute('visible',false );
-          document.getElementById("sky3_video1").setAttribute('visible',true );
-          document.getElementById("titleText").setAttribute('value','Monitoring Area');
+          vid1.setAttribute('visible',false );
+          vid2.setAttribute('visible',true );
+          vid1Src.pause();
+          vid2Src.play();
           break;
           case 'sky4':
-          document.getElementById("sky2_video").setAttribute('visible',false );
-          document.getElementById("sky3_video1").setAttribute('visible',false );
-          document.getElementById("titleText").setAttribute('value','Access Station');
+          vid1.setAttribute('visible',false );
+          vid2.setAttribute('visible',false );
+          vid1Src.pause();
+          vid2Src.pause();
           break;
 
         }
@@ -71,11 +79,12 @@
           <img id="sky2" src="data/sky_2.jpg" crossorigin="anonymous" />
           <img id="sky3" src="data/sky_3.jpg" crossorigin="anonymous" />
           <img id="sky4" src="data/sky_4.jpg" crossorigin="anonymous" />
-
+          <video id="sky2_video_src" src="data/sky2_video.mp4" ></video>
+          <video id="sky3_video1_src" src="data/sky3_video1.mp4" /></video>
         </a-assets>
         <a-sky src="#sky1" rotation="0 -100 0" id="skymain"></a-sky>
-        <a-video src="data/sky2_video.mp4" width="2.5" height="1.7" position="2.7 0.3 -4" visible="false" id="sky2_video"></a-video>
-        <a-video src="data/sky3_video1.mp4" width="3" height="2" position="0.5 0.5 -4" visible="false" id="sky3_video1"></a-video>
+        <a-video src="#sky2_video_src" width="2.5" height="1.7" position="2.7 0.3 -4" visible="false" id="sky2_video"></a-video>
+        <a-video src="#sky3_video1_src" width="3" height="2" position="0.5 0.5 -4" visible="false" id="sky3_video1"></a-video>
 
        <!-- <a-video src="video.mp4" width="2.5" height="3.5" position="1.7 3.4 -4" visible="false" id="vidiconobj"></a-video>
         <a-image id="imageiconobj" src="imageiconobj.jpg" width="2.5" height="3.5" id="vidicon" position="1.7 3.4 -4" visible="false"></a-image>
@@ -85,7 +94,6 @@
         </a-collada-model>
         <a-animation attribute="position" from="0 0 0" to="2 4 -8"><a-text font="kelsonsans" value="Welcome" width="6" position="-2.5 0.25 -1.5" rotation="0 15 0"></a-text></a-animation>
 -->
-        <a-text font="kelsonsans" value="Entrance Area" width="6" position="0 2 -4" rotation="0 0 0" id="titleText"></a-text>
         <a-image src="#thumb1" width="1" height="0.5" id="sky1_thumb" position="-2 2 -4" set-sky></a-image>
         <a-image src="#thumb2" width="1" height="0.5" id="sky2_thumb" position="-2 1.4 -4" set-sky></a-image>
         <a-image src="#thumb3" width="1" height="0.5" id="sky3_thumb" position="-2 0.8 -4" set-sky></a-image>
