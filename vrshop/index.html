@@ -1,0 +1,287 @@
+<html>
+  <head>
+    <title>Dubai Expo - Single Screen</title>
+    <meta name="description" content="Vr Shop">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/0.6.0/aframe-master.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.0/underscore.js"></script>
+    <script>
+    AFRAME.registerComponent('set-sky', {
+      schema: {default:''},
+      init() {
+      this.el.addEventListener('click', () => {
+      var sky = document.getElementById('sky_id')
+      sky.setAttribute('src','#'+this.el.id+'_sky');
+      var thumb1 = document.getElementById("apparel");
+      var thumb2 = document.getElementById("electronic");
+      var thumb3 = document.getElementById("grocery");
+      var store1 = document.getElementById("apparel_store");
+      var store2 = document.getElementById("electronic_store");
+      //var store3 = document.getElementById("apparel_store");
+      switch(this.el.id){
+        case 'apparel':
+        thumb1.setAttribute('rotation',{'x':0,'y':-90,'z':0});
+        thumb2.setAttribute('rotation',{'x':0,'y':-90,'z':0});
+        thumb3.setAttribute('rotation',{'x':0,'y':-90,'z':0});
+        thumb1.setAttribute('position',{'x':10.227,'y':12.368,'z':-2});
+        thumb2.setAttribute('position',{'x':10.227,'y':9.368,'z':-2});
+        thumb3.setAttribute('position',{'x':10.227,'y':6.368,'z':-2});
+        store1.setAttribute('visible',"true");
+        store2.setAttribute('visible',"false");
+        break;
+        case 'electronic':
+        thumb1.setAttribute('rotation',{'x':0,'y':-180,'z':0});
+        thumb2.setAttribute('rotation',{'x':0,'y':-180,'z':0});
+        thumb3.setAttribute('rotation',{'x':0,'y':-180,'z':0});
+        thumb1.setAttribute('position',{'x':15.227,'y':5.368,'z':10});
+        thumb2.setAttribute('position',{'x':15.227,'y':2.368,'z':10});
+        thumb3.setAttribute('position',{'x':15.227,'y':-0.368,'z':10});
+        store1.setAttribute('visible',"false");
+        store2.setAttribute('visible',"true");
+        break;
+        case 'grocery':
+        thumb1.setAttribute('rotation',{'x':0,'y':90,'z':0});
+        thumb2.setAttribute('rotation',{'x':0,'y':90,'z':0});
+        thumb3.setAttribute('rotation',{'x':0,'y':90,'z':0});
+        thumb1.setAttribute('position',{'x':-21.313,'y':9.362,'z':-0.960});
+        thumb2.setAttribute('position',{'x':-21.3137,'y':6.362,'z':-0.960});
+        thumb3.setAttribute('position',{'x':-21.313,'y':3.362,'z':-0.960});
+        store1.setAttribute('visible',"false");
+        store2.setAttribute('visible',"false");
+        break;
+      }
+    });
+    }
+    });
+    var jData = {"product":[],"total":0};
+    AFRAME.registerComponent('add-product', {
+      schema: {default:''},
+      init() {
+          this.el.addEventListener('click', () => {
+            var data = this.el.getAttribute('data');
+            data = JSON.parse(data);
+            pushData(data);
+          })
+      }
+    });
+    function pushData(data){
+       var indexData = _.findIndex(jData.product, function(o) { return o.product_id === data.product_id });
+       var flag = true;
+       if(indexData==-1){
+         data.qty = 1;
+         data.product_totalprice = data.product_price;
+         jData.product.push(data);
+         var indexData = jData.product.length-1;
+         if(jData.product.length<=5)
+         createRow(jData.product,indexData);
+         flag = false;
+       }
+       var indexData = jData.product.length-1;
+       increaseQty(indexData,flag);
+
+    }
+    function createRow(rowDataObj,indexData){
+      var posRowIndex = indexData+1
+      var posRow = (posRowIndex==0)?1.6:1.6-(0.5*posRowIndex);
+      rowDataObj = rowDataObj[indexData];
+
+      var rowDataRow ='<a-entity id="product_"'+indexData+'>';
+      rowDataRow += '<a-image add-product-cart productIndex="'+indexData+'"  src="#plus" width="0.4" height="0.4"  position="-4.5 '+posRow+' 0.1" rotation="0 0 0" ></a-image>';
+      rowDataRow += '<a-text  position="-4 '+posRow+' 0.1" align="left" width="5"   value="'+rowDataObj.product_name+'"  color="#b30e0e"></a-text>';
+      rowDataRow += '<a-text  position="0.5 '+posRow+' 0.1" id="product_qty_'+indexData+'" align="left" width="5"  value="'+rowDataObj.qty+'"  color="#b30e0e"></a-text>';
+      rowDataRow += '<a-text  position="1.5 '+posRow+' 0.1"  0.1" align="left" width="5"   value="'+rowDataObj.product_price+'" color="#b30e0e"></a-text>';
+      rowDataRow += '<a-text  position="2.5 '+posRow+' 0.1" align="left" width="5" id="product_totalprice_'+indexData+'"   value="'+rowDataObj.product_totalprice+'"  color="#b30e0e"></a-text>';
+      rowDataRow += '<a-image remove-product-cart productIndex="'+indexData+'" src="#minus" width="0.4" height="0.4"  position="4 '+posRow+' 0.1" rotation="0 0 0"></a-image>';
+      rowDataRow += '</a-entity>';
+      addRow(rowDataRow);
+    }
+    function addRow(rowDataRow){
+      var chkoutDiv = document.getElementById("checkoutAreaProduct");
+      chkoutDiv.insertAdjacentHTML('beforeend',rowDataRow);
+    }
+    AFRAME.registerComponent('add-product-cart', {
+      schema: {default:''},
+      init() {
+          this.el.addEventListener('click', () => {
+            var productIndex = this.el.getAttribute('productIndex');
+            increaseQty(productIndex,true);
+          })
+      }
+    });
+    AFRAME.registerComponent('remove-product-cart', {
+      schema: {default:''},
+      init() {
+          this.el.addEventListener('click', () => {
+            var productIndex = parseInt(this.el.getAttribute('productIndex'));
+            //delete jData.product[0];
+            //console.log(jData,productIndex);
+            //decreaseQty(productIndex);
+          })
+      }
+    });
+
+    AFRAME.registerComponent('show-cart', {
+      schema: {default:''},
+      init() {
+          this.el.addEventListener('click', () => {
+          showHideCart('checkoutArea',true);
+          })
+      }
+    });
+    AFRAME.registerComponent('hide-cart', {
+      schema: {default:''},
+      init() {
+          this.el.addEventListener('click', () => {
+          var hideType = this.el.getAttribute('hide-type');
+          showHideCart(hideType,false);
+          })
+      }
+    });
+    function showHideCart(divType,flag){
+      document.getElementById(divType).setAttribute("visible",flag);
+    }
+    function decreaseQty(productIndex){
+
+    }
+    function increaseQty(productIndex,flag){
+      if(flag){
+        jData.product[productIndex].qty +=1;
+        jData.product[productIndex].product_totalprice += jData.product[productIndex].product_price;
+      }
+      document.getElementById("product_qty_"+productIndex).setAttribute('value',jData.product[productIndex].qty);
+      document.getElementById("product_totalprice_"+productIndex).setAttribute('value',jData.product[productIndex].product_totalprice);
+      var total = 0
+      _.map(jData.product,function(o) {total+=o.product_totalprice})
+      setGrnadTotal(total);
+      showHideCart('checkoutArea',true);
+    }
+    function setGrnadTotal(total){
+      document.getElementById("grandTotal").setAttribute('value','Rs.'+total);
+    }
+    AFRAME.registerComponent('pay-now', {
+      schema: {default:''},
+      init() {
+        this.el.addEventListener('click', () => {
+        var data = this.el.getAttribute('data');
+        data = JSON.parse(data);
+        showHideCart(data.showDiv,true);
+        showHideCart(data.hideDiv,false);
+      })
+        }
+      });
+    </script>
+
+
+  </head>
+  <body>
+
+      <a-scene>
+        <a-assets>
+
+          <img id="apparel_sky" src="assets/apparel_sky.jpg">
+          <img id="grocery_sky" src="assets/grocery_sky.jpg">
+          <img id="electronic_sky" src="assets/electronic_sky.jpg">
+          <img id="cart" src="assets/cart.png">
+          <img id="plus" src="assets/plus.svg">
+          <img id="minus" src="assets/minus.png">
+          <img id="pay" src="assets/pay.png">
+          <img id="close" src="assets/close.png">
+          <img id="cartshow" src="assets/cartshow.png">
+          <img id="creditcardpay" src="assets/creditcardpay.png">
+          <img id="walletpay" src="assets/walletpay.png">
+          <img id="codpay" src="assets/codpay.png">
+        </a-assets>
+        <a-sky src="#apparel_sky" id="sky_id"></a-sky>
+        <a-image show-cart  src="#cartshow" width="5" height="5"  position="-7.052 13.142 -20.248" rotation="90 0 0" ></a-image>
+
+        <a-entity id="apparel_store" visible="true">
+          <a-image id="apparel_crt_1" add-product data='{"product_id":"apparel_101","product_name":"Provogue Ladies Top","product_price":5000}'  src="#cart" width="20" height="20"  position="-30.811 36.894 260.126"></a-image>
+          <a-text id="apparel_price_1" font="kelsonsans" value="Rs.5000" width="200" height="10"  position="-30.811 53 260.126" rotation="0 180 0" align="center" color="#000066"></a-text>
+          <a-image id="apparel_crt_2" add-product data='{"product_id":"apparel_102","product_name":"Ladies Long Boot","product_price":1000}' src="#cart" width="10" height="10"  position="-95.395 -140.336 -70.637" rotation="90 0 0"></a-image>
+          <a-text id="apparel_price_2" font="kelsonsans" value="Rs.1000" width="100" height="10"  position="-89.395 -125.336 -70.637" rotation="-90 0 0" align="center" color="#000066"></a-text>
+          <a-image id="apparel_crt_3" add-product data='{"product_id":"apparel_103","product_name":"Ladies Kurthi","product_price":6000}' src="#cart" width="10" height="10"  position="-160.866 -32.312 -83.6657" rotation="0 0 0"></a-image>
+          <a-text id="apparel_price_3" font="kelsonsans" value="Rs.6000" width="100" height="10"  position="-136.380 -19.025 -70.637" rotation="0 0 0" align="center" color="#000066"></a-text>
+          <a-image id="apparel_crt_4" add-product data='{"product_id":"apparel_104","product_name":"Blue Ladies Top","product_price":5500}' src="#cart" width="5" height="5"  position="-125.387 -10 -31.593" rotation="0 90 0"></a-image>
+          <a-text id="apparel_price_4" font="kelsonsans" value="Rs.5500" width="50" height="5"  position="-130.387 -5.241 -33.465" rotation="0 90 0" align="center" color="white"></a-text>
+          <a-image id="apparel_crt_5" add-product data='{"product_id":"apparel_105","product_name":"Ladies Long Boot XL","product_price":2500}' src="#cart" width="10" height="10"  position="-260.265 -60.0256 136.291" rotation="0 90 0"></a-image>
+          <a-text id="apparel_price_5" font="kelsonsans" value="Rs.2500" width="30" height="10"  position="-95.901 -17.652 49.470" rotation="0 90 0" align="center" color="white"></a-text>
+
+       </a-entity>
+       <a-entity id="electronic_store" visible="false">
+         <a-image id="electronic_crt_1" src="#cart" add-product data='{"product_id":"electronic_101","product_name":"Samsung LED 64 inch","product_price":65000}' width="20" height="20"  position="33.080 -12.162 -344.808"></a-image>
+         <a-text id="electronic_price_1" font="kelsonsans" value="Rs.65000" width="200" height="10"  position="45.782 4.142 -526.768" rotation="0 0 0" align="center" color="white"></a-text>
+         <a-image id="electronic_crt_2" src="#cart" add-product data='{"product_id":"electronic_102","product_name":"Philips Music System","product_price":10000}' width="10" height="10"  position="-151.265 -61.731 -68.239" rotation="90 0 0"></a-image>
+         <a-text id="electronic_price_2" font="kelsonsans" value="Rs.10000" width="40" height="10"  position="-75.330 -25.167 -34.154" rotation="0 90 0" align="center" color="yellow"></a-text>
+         <a-image id="electronic_crt_3" src="#cart" add-product data='{"product_id":"electronic_103","product_name":"Philips Speaker","product_price":7500}' width="5" height="5"  position="1.873 -25.530 97.375" rotation="0 135 0"></a-image>
+         <a-text id="electronic_price_3" wrapCount="20"  font="kelsonsans" value="Rs.7500" width="50" height="5"  position="-0.394 -20.213 97.676" rotation="0 135 0" align="center" color="white"></a-text>
+         <a-image id="electronic_crt_4" src="#cart" add-product data='{"product_id":"electronic_104","product_name":"Sony Headphone","product_price":550}' width="5" height="5"  position="-125.387 -10 -31.593" rotation="0 90 0"></a-image>
+         <a-text id="electronic_price_4" font="kelsonsans" wrapCount="20" value="Rs.550" width="100" height="15"  position="-130.387 -5.241 -33.465" rotation="0 90 0" align="center" color="blue"></a-text>
+         <a-image id="electronic_crt_5" src="#cart" add-product data='{"product_id":"electronic_105","product_name":"Apple Computer AIR","product_price":125000}' width="10" height="10"  position="242.443 -18.350 1.283" rotation="0 90 0"></a-image>
+         <a-text id="electronic_price_5" font="kelsonsans" value="Rs.125000" width="100" wrapCount="20"  position="237.141 -8.437 1.450" rotation="0 -90 0" align="center" color="white"></a-text>
+
+      </a-entity>
+        <a-plane set-sky id="apparel" width="4" height="2" position="10.227 12.368 -2" color="#000" rotation="0 -90 0" opacity="0.5">
+          <a-text  position="0 0 .02" align="center" width="10"  opacity="1" value="Apparel"></a-text>
+        </a-plane>
+
+        <a-plane set-sky id="grocery" width="4" height="2" position="10.227  9.368 -2" color="#000" rotation="0 -90 0" opacity="0.5">
+          <a-text  position="0 0 .02" align="center" width="10"  opacity="1" value="Grocery"></a-text>
+        </a-plane>
+
+        <a-plane set-sky id="electronic" width="4" height="2" position="10.227 6.368 -2" color="#000" rotation="0 -90 0" opacity="0.5">
+          <a-text  position="0 0 .02" align="center" width="10"  opacity="1" value="Electronics"></a-text>
+        </a-plane>
+
+        </a-plane>
+
+        <a-plane visible="false" id="paymentArea" width="10" height="5" position="0 2 -5" color="white" rotation="0 0 0" opacity="0.2">
+          <a-text  position="0 2.1 0.1" align="center" width="10" value="Select the Payment Method" color="#b30e0e"></a-text>
+          <a-image  src="#creditcardpay" width="1.5" height="0.75"  position="0 1 0.1" rotation="0 0 0"></a-image>
+          <a-image  src="#walletpay" width="1.5" height="0.75"  position="0 -0.1 0.1" rotation="0 0 0"></a-image>
+          <a-image  src="#codpay" width="1.5" height=0.75  position="0 -1.2 0.1" rotation="0 0 0"></a-image>
+          <a-image  src="#close" width="0.5" height="0.5"  position="4.5 2.1 0.1" rotation="0 0 0" hide-cart hide-type="paymentArea"></a-image>
+
+        </a-plane>
+
+        <a-plane visible="false" id="checkoutArea" width="10" height="5" position="0 2 -5" color="white" rotation="0 0 0" opacity="0.2">
+          <a-text  position="0 2.1 0.1" align="center" width="10" scale="1.2 1.2 0"  value="Cart" color="#b30e0e"></a-text>
+          <a-entity>
+
+            <a-text  position="-4 1.7 0.11" align="left" width="5"   value="Product Name"  color="black"></a-text>
+            <a-text  position="0.5 1.7 0.1" align="left" width="5"  value="Qty"  color="black"></a-text>
+            <a-text  position="1.5 1.7 0.1" align="left" width="5"   value="Price" color="black"></a-text>
+            <a-text  position="2.5 1.7 0.11" align="left" width="5"   value="Total"  color="black"></a-text>
+
+
+
+          </a-entity>
+          <a-entity id="checkoutAreaProduct" >
+
+          </a-entity>
+          <a-entity id="checkoutAreaPayment">
+            <a-entity>
+              <a-text  position="1  -1.5 0.1" align="left" width="5"  value="Grand Total"  color="black"></a-text>
+              <a-text id="grandTotal" position="2.5  -1.5 0.1" align="left" width="5"   value="Rs.0" color="black"></a-text>
+
+
+            </a-entity>
+          <a-entity>
+
+            <a-image  src="#pay" width="1" height="0.5"  position="4 -2 0.1" rotation="0 0 0" pay-now data='{"showDiv":"paymentArea","hideDiv":"checkoutArea"}'></a-image>
+            <a-image  src="#close" width="0.5" height="0.5"  position="4.2 2 0.1" rotation="0 0 0" hide-cart hide-type="checkoutArea"></a-image>
+
+
+          </a-entity>
+        </a-entity>
+        </a-plane>
+
+
+        <a-entity camera="userHeight: 1.6" look-controls wasd-controls-enabled mouse-cursor>
+            <a-entity position="0 0 -3" scale="0.2 0.2 0.2"  geometry="primitive: ring; radiusOuter: 0.20;radiusInner: 0.10;" material="color: #990000; shader: flat" cursor="maxDistance: 30; fuse: true">
+                <a-animation begin="click" easing="ease-in" attribute="scale" fill="backwards" from="0.1 0.1 0.1" to="1 1 1" dur="150"></a-animation>
+                <a-animation begin="fusing"  easing="ease-in" attribute="scale" fill="forwards" from="1 1 1" to="0.2 0.2 0.2" dur="1500"></a-animation>
+            </a-entity>
+        </a-entity>
+      </a-scene>
+    </body>
+
+</html>
